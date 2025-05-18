@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package marketdata;
+
+// Service definition
+service MarketDataService {
+  // Bidirectional stream for subscribing and receiving market data
+  rpc Subscribe (stream SubscriptionRequest) returns (stream MarketDataUpdate);
+}
+
+// Message for client subscription/unsubscription requests
+message SubscriptionRequest {
+  enum Action {
+    SUBSCRIBE = 0;
+    UNSUBSCRIBE = 1;
+  }
+  Action action = 1;
+  string instrument_id = 2;
+}
+
+// Message for market data updates (can be a snapshot or incremental update)
+message MarketDataUpdate {
+  // Using oneof for snapshot or incremental update
+  oneof update_type {
+    OrderBookSnapshot snapshot = 1;
+    OrderBookIncrementalUpdate incremental_update = 2;
+  }
+}
+
+// Message for an order book snapshot
+message OrderBookSnapshot {
+  string instrument_id = 1;
+  repeated PriceLevel bids = 2;
+  repeated PriceLevel asks = 3;
+}
+
+// Message for an incremental order book update
+message OrderBookIncrementalUpdate {
+  string instrument_id = 1;
+  repeated PriceLevel bid_updates = 2;
+  repeated PriceLevel ask_updates = 3;
+}
+
+// Message for a price level in the order book
+message PriceLevel {
+  double price = 1;
+  double quantity = 2;
+}
