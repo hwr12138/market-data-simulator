@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map> // Include for using std::map
-#include <set>  // Include for using std::set
-#include <thread> // Include for using std::thread
-#include <chrono> // Include for using std::chrono
-#include <atomic> // Include for using std::atomic
+#include <map>
+#include <set>
+#include <thread>
+#include <chrono>
+#include <atomic>
 
 #include <grpcpp/grpcpp.h>
 
@@ -26,7 +26,6 @@ using marketdata::OrderBookIncrementalUpdate;
 using marketdata::PriceLevel;
 
 // A helper function to simulate streaming incremental updates
-// In a real application, this would read from a market data source
 void StreamIncrementalUpdates(
     const std::string& instrument_id, ServerContext* context,
     grpc::ServerReaderWriter<MarketDataUpdate, SubscriptionRequest>* stream,
@@ -66,14 +65,8 @@ void StreamIncrementalUpdates(
 }
 
 
-// Class that implements the MarketDataService
 class MarketDataServiceImpl final : public MarketDataService::Service {
 public:
-    // Using a map to keep track of active streams and their associated data
-    // Key: A unique identifier for the stream (e.g., pointer address)
-    // Value: A struct/class holding the stream pointer and subscribed instruments
-    // For simplicity in this example, we'll manage threads directly in the Subscribe method scope,
-    // but in a real app, you'd manage them centrally.
 
     Status Subscribe(ServerContext* context,
                      grpc::ServerReaderWriter<MarketDataUpdate, SubscriptionRequest>* stream) override {

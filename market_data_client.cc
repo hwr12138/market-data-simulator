@@ -4,8 +4,8 @@
 #include <thread>
 #include <chrono>
 #include <future>
-#include <map> // Include for std::map
-#include <iomanip> // Include for std::setprecision and std::fixed
+#include <map>
+#include <iomanip>
 
 #include <grpcpp/grpcpp.h>
 
@@ -98,10 +98,7 @@ public:
                 std::cout << "Client received INCREMENTAL UPDATE for instrument: " << instrument_id << std::endl;
 
                 // Apply incremental updates to the existing order book
-                // In a real system, you'd need to understand how the server
-                // signals additions, modifications, and deletions.
                 // Here, we'll assume quantity > 0 is an add/modify, and quantity == 0 is a deletion.
-
                 for (const auto& bid_update : incremental_update.bid_updates()) {
                     if (bid_update.quantity() > 0) {
                         order_books_bids_[instrument_id][bid_update.price()] = bid_update.quantity();
@@ -160,7 +157,6 @@ private:
     // Data structures to hold the order book for each instrument
     // Using std::map<double, double> to store price-quantity levels, ordered by price.
     // Bids are typically sorted descending by price, Asks ascending.
-    // std::map automatically sorts keys, so we'll iterate bids reverse and asks forward.
     std::map<std::string, std::map<double, double>> order_books_bids_;
     std::map<std::string, std::map<double, double>> order_books_asks_;
 };
